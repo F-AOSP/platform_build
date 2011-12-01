@@ -1865,14 +1865,14 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE)
 	   --override_device=$(override_device) \
 	   $(if $(OEM_OTA_CONFIG), -o $(OEM_OTA_CONFIG)) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
-ifneq ($(TARGET_CUSTOM_RELEASETOOL),)
-	@echo "Running releasetool"
-	$(TARGET_CUSTOM_RELEASETOOL)
-endif
 
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
+ifneq ($(TARGET_CUSTOM_RELEASETOOL),)
+	@echo "Running releasetool"
+	$(hide) $(TARGET_CUSTOM_RELEASETOOL)
+endif
 
 endif    # build_ota_package
 
