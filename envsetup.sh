@@ -1501,7 +1501,6 @@ function aospremote()
     git remote add aosp https://android.googlesource.com/$PFX$PROJECT
     echo "Remote 'aosp' created"
 }
-export -f aospremote
 
 function cafremote()
 {
@@ -1518,7 +1517,6 @@ function cafremote()
     git remote add caf git://codeaurora.org/$PFX$PROJECT
     echo "Remote 'caf' created"
 }
-export -f cafremote
 
 # Force JAVA_HOME to point to java 1.7/1.8 if it isn't already set.
 function set_java_home() {
