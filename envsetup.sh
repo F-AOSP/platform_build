@@ -1675,7 +1675,6 @@ function cmremote()
     fi
     echo You can now push to "cmremote".
 }
-export -f cmremote
 
 function aospremote()
 {
@@ -1692,7 +1691,6 @@ function aospremote()
     git remote add aosp https://android.googlesource.com/$PFX$PROJECT
     echo "Remote 'aosp' created"
 }
-export -f aospremote
 
 function cafremote()
 {
@@ -1709,7 +1707,6 @@ function cafremote()
     git remote add caf git://codeaurora.org/$PFX$PROJECT
     echo "Remote 'caf' created"
 }
-export -f cafremote
 
 function cmgerrit() {
     if [ $# -eq 0 ]; then
