@@ -1583,9 +1583,6 @@ TARGET_PACKAGE := $(PRODUCT_OUT)/AOSP-$(PLATFORM_VERSION)-$(shell date +%Y%m%d)-
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
-ifneq ($(TARGET_CUSTOM_RELEASETOOL),)
-	$(error TARGET_CUSTOM_RELEASETOOL is deprecated)
-endif
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(TARGET_PACKAGE) > $(TARGET_PACKAGE).md5sum
 	@echo -e ${CL_CYN}"Package Complete: $(TARGET_PACKAGE)"${CL_RST}
