@@ -1611,7 +1611,12 @@ else
     OTA_FROM_TARGET_SCRIPT := $(TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT)
 endif
 
+AOSP_VENDOR_EXISTS = $(strip $(wildcard $(TOP)/vendor/aosp/common.mk))
+ifneq ($(AOSP_VENDOR_EXISTS),)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
+else
+    $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
+endif
 
 ifeq ($(TARGET_OTA_ASSERT_DEVICE),)
     $(INTERNAL_OTA_PACKAGE_TARGET): override_device := auto
