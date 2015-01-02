@@ -79,6 +79,10 @@ Usage:  ota_from_target_files [flags] input_target_files output_ota_package
       Specifies the number of worker-threads that will be used when
       generating patches for incremental updates (defaults to 3).
 
+  --backup <boolean>
+      Enable or disable the execution of backuptool.sh.
+      Disabled by default.
+
   --override_device <device>
       Override device-specific asserts. Can be a comma-separated list.
 
@@ -132,6 +136,7 @@ OPTIONS.block_based = False
 OPTIONS.updater_binary = None
 OPTIONS.oem_source = None
 OPTIONS.fallback_to_full = True
+OPTIONS.backuptool = False
 OPTIONS.override_device = 'auto'
 OPTIONS.override_prop = False
 
@@ -562,6 +567,16 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
   device_specific.FullOTA_InstallBegin()
 
+  if OPTIONS.backuptool:
+    if block_based:
+      common.ZipWriteStr(output_zip, "system/bin/backuptool.sh",
+                     ""+input_zip.read("SYSTEM/bin/backuptool.sh"))
+      common.ZipWriteStr(output_zip, "system/bin/backuptool.functions",
+                     ""+input_zip.read("SYSTEM/bin/backuptool.functions"))
+    script.Mount("/system")
+    script.RunBackup("backup")
+    script.Unmount("/system")
+
   system_progress = 0.75
 
   if OPTIONS.wipe_user_data:
@@ -650,6 +665,14 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     script.Unmount("/system")
 
   device_specific.FullOTA_PostValidate()
+
+  if OPTIONS.backuptool:
+    script.ShowProgress(0.02, 10)
+    if block_based:
+      script.Mount("/system")
+    script.RunBackup("restore")
+    if block_based:
+      script.Unmount("/system")
 
   script.ShowProgress(0.05, 5)
   script.WriteRawImage("/boot", "boot.img")
@@ -1468,6 +1491,8 @@ def main(argv):
       OPTIONS.updater_binary = a
     elif o in ("--no_fallback_to_full",):
       OPTIONS.fallback_to_full = False
+    elif o in ("--backup"):
+      OPTIONS.backuptool = bool(a.lower() == 'true')
     elif o in ("--override_device"):
       OPTIONS.override_device = a
     elif o in ("--override_prop"):
@@ -1493,9 +1518,9 @@ def main(argv):
                                               "oem_settings=",
                                               "verify",
                                               "no_fallback_to_full",
+                                              "backup=",
                                               "override_device=",
-                                              "override_prop=",
-                                              ],
+                                              "override_prop="],
                              extra_option_handler=option_handler)
 
   if len(args) != 2:
