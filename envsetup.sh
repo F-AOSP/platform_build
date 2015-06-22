@@ -565,6 +565,7 @@ function lunch()
     export TARGET_PRODUCT=$product
     export TARGET_BUILD_VARIANT=$variant
     export TARGET_BUILD_TYPE=release
+    export TARGET_DEVICE=$(get_build_var TARGET_DEVICE)
 
     echo
 
@@ -2138,7 +2139,6 @@ function pez {
 
 function chromium_prebuilt() {
     T=$(gettop)
-    export TARGET_DEVICE=$(get_build_var TARGET_DEVICE)
     hash=$T/prebuilts/chromium/$TARGET_DEVICE/hash.txt
 
     if [ -r $hash ] && [ $(git --git-dir=$T/external/chromium_org/.git --work-tree=$T/external/chromium_org rev-parse --verify HEAD) == $(cat $hash) ]; then
