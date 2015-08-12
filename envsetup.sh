@@ -1699,6 +1699,40 @@ function aospremote()
     echo "Remote 'aosp' created"
 }
 
+function faospremote()
+{
+    git remote rm F-AOSP 2> /dev/null
+    if [ ! -d .git ]
+    then
+        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
+    fi
+    PROJECT=`pwd -P | sed s#$ANDROID_BUILD_TOP/##g`
+    PROJECT=`echo "$PROJECT" | sed -r 's/[/]+/_/g'`
+    if (echo $PROJECT | grep -qv "^device")
+    then
+        PFX="platform_"
+    fi
+    git remote add F-AOSP git@github.com:F-AOSP/$PFX$PROJECT
+    echo "Remote 'F-AOSP' created"
+}
+
+function cmgitremote()
+{
+    git remote rm cm 2> /dev/null
+    if [ ! -d .git ]
+    then
+        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
+    fi
+    PROJECT=`pwd -P | sed s#$ANDROID_BUILD_TOP/##g`
+    PROJECT=`echo "$PROJECT" | sed -r 's/[/]+/_/g'`
+    if (echo $PROJECT | grep -qv "^device")
+    then
+        PFX="android_"
+    fi
+    git remote add cm https://github.com/CyanogenMod/$PFX$PROJECT
+    echo "Remote 'cm' created"
+}
+
 function cafremote()
 {
     git remote rm caf 2> /dev/null
